@@ -1,0 +1,18 @@
+[tasks.rathole]
+env = {"C_APP"="rathole", "IMAGE" = "huangjiemin/rust_aarch64-gcc_openssl:1.80.1_9.4.0_1.1.0l" }
+run_task  = { name = ["_aarch64-bin-linux"] }
+
+[tasks._aarch64-bin-linux]
+condition = { env_set = [ "IMAGE", "C_APP" ] }
+script = '''
+    docker run --rm -it -v %userprofile%\.git-credentials:/root/.git-credentials -v %cd%:/root/src    ^
+        -v %userprofile%\aarch64\registry:/root/.cargo/registry ^
+        -v %userprofile%\aarch64\git:/root/.cargo/git ^
+        %IMAGE% ^
+        sh -c ^"cargo build --bin %C_APP% --release && rm -rf target/%C_APP%-aarch64 ^
+            && upx --best --lzma -o ./target/%C_APP%-aarch64 ./target/aarch64-unknown-linux-gnu/release/%C_APP% ^
+            && scp -o StrictHostKeyChecking=no -P 22000 ./target/%C_APP%-aarch64 pi@local.for-memory.online:/tmp/%C_APP%-tmp    ^
+            && ssh -p 22000 pi@local.for-memory.online "sudo systemctl stop %C_APP%c && sudo systemctl stop %C_APP%s && sudo cp -f /tmp/%C_APP%-tmp /usr/local/bin/%C_APP% && sudo systemctl daemon-reload && sudo systemctl start %C_APP%c && sudo systemctl start %C_APP%s" ^"
+    '''
+
+## && ssh -p 22000 pi@local.for-memory.online "sudo systemctl stop %C_APP% && cp -f /tmp/%C_APP%-tmp /usr/local/bin/%C_APP% && sudo systemctl daemon-reload && sudo systemctl start %C_APP%" ^"

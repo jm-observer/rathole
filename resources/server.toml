@@ -1,0 +1,6 @@
+[server]
+bind_addr = "0.0.0.0:9999"
+default_token = "123abc"
+
+[server.services.huawei]
+bind_addr = "0.0.0.0:18888"
