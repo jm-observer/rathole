@@ -1,0 +1,18 @@
+[Unit]
+Description=rathole client Service
+After=network.target rathole.service
+Wants=rathole-client.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi
+ExecStart="/home/pi/rathole/rathole" "/home/pi/rathole/client.toml"
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+WatchdogSec=70
+
+[Install]
+WantedBy=multi-user.target

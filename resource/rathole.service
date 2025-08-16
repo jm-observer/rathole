@@ -1,0 +1,21 @@
+[Unit]
+Description=rathole server
+After=network.target rathole.service
+Wants=rathole.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi
+ExecStart="/home/pi/rathole/rathole" "/home/pi/rathole/server.toml"
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+WatchdogSec=70
+Environment=DATABASE_IP=127.0.0.1
+Environment=DATABASE_PORT=13306
+Environment=DATABASE_URL=mysql://listening:listening@127.0.0.1:13306/listening
+
+[Install]
+WantedBy=multi-user.target

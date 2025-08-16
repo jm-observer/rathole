@@ -4,3 +4,6 @@ remote_addr = "127.0.0.1:13333" # 服务器的地址。端口必须与 `server.b
 [client.services.my_nas_ssh]
 token = "use_a_secret_that_only_you_know" # 必须与服务器相同以通过验证
 local_addr = "127.0.0.1:22" # 需要被转发的服务的地址
+[client.services.guang_mao]
+token = "11234" # 必须与服务器相同以通过验证
+local_addr = "192.168.1.1:8080" # 需要被转发的服务的地址

@@ -1,0 +1,40 @@
+[config]
+default_to_workspace = false
+
+[env]
+PiIp = "192.168.3.147"
+#PiIp = "127.0.0.1"
+DbIp = "host.docker.internal"
+
+[tasks.release-web]
+env = { "AARCH64_IMAGE" = "huangjiemin/rust_aarch64-gcc_openssl:1.77.0_9.4.0_1.1.0l", "C_APP" = "rathole", "P_APP" = "rathole", "FEATURES" = "" }
+run_task = { name = ["_release-web", "restart-web"] }
+
+
+
+[tasks._release-web]
+condition = { env_set = ["P_APP", "C_APP", "AARCH64_IMAGE", "FEATURES"] }
+script_runner = "cmd"
+script = ["resource/task/release-web.cmd"]
+
+[tasks.restart-web]
+env = { "AARCH64_IMAGE" = "huangjiemin/rust_aarch64-gcc_openssl:1.77.0_9.4.0_1.1.0l", "C_APP" = "rathole" }
+script_runner = "cmd"
+script = ["resource/task/restart-web.cmd"]
+
+[tasks.deploy-config]
+description = "部署配置文件和服务到树莓派"
+script_runner = "cmd"
+script = ["resource/task/deploy-config.cmd"]
+
+[tasks.update-config]
+description = "部署配置文件和服务到树莓派"
+script_runner = "cmd"
+script = ["resource/task/update-config.cmd"]
+
+
+[tasks.prepare-environment]
+description = "设置Docker镜像的SSH密钥到树莓派，实现容器免密传输"
+env = { "AARCH64_IMAGE" = "huangjiemin/rust_aarch64-gcc_openssl:1.77.0_9.4.0_1.1.0l" }
+script_runner = "cmd"
+script = ["resource/task/setup-ssh-keys.cmd"]
